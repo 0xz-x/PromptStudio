@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文章作成向け | 自動プロンプト作成ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-nav">
+        <a class="brand-link" href="index.html">Prompt Studio</a>
+        <nav class="nav-links" aria-label="ツール一覧">
+          <a class="nav-link" href="coding.html">コーディング</a>
+          <a class="nav-link" href="literature.html">文献検索</a>
+          <a class="nav-link" href="writing.html" aria-current="page">文章作成</a>
+        </nav>
+      </header>
+
+      <header class="hero tool-hero">
+        <p id="pageEyebrow" class="eyebrow"></p>
+        <h1 id="pageTitle"></h1>
+        <p id="pageCopy" class="hero-copy"></p>
+        <div class="hero-actions">
+          <a class="button secondary link-button" href="index.html">ホームへ戻る</a>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2 id="formTitle"></h2>
+            <p id="formDescription"></p>
+          </div>
+          <form id="promptForm" class="prompt-form"></form>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="panel-heading">
+            <h2>生成されたプロンプト</h2>
+            <p>新規作成やリライト依頼に合わせて、文章作成向けの形に整えます。</p>
+          </div>
+
+          <div class="output-toolbar">
+            <span id="statusMessage" class="status">未生成</span>
+            <button type="button" id="copyButton" class="button secondary">コピー</button>
+          </div>
+
+          <textarea
+            id="generatedPrompt"
+            class="output-area"
+            rows="24"
+            placeholder="ここに生成結果が表示されます"
+          ></textarea>
+        </section>
+      </main>
+    </div>
+
+    <script id="pageConfig" type="application/json">
+      {
+        "slug": "writing",
+        "pageTitle": "文章作成向けプロンプト作成",
+        "pageHeadingHtml": "文章作成向け<br />プロンプト作成",
+        "eyebrow": "Writing Prompt Builder",
+        "heroCopy": "記事、レポート、説明文、案内文などの文章作成に向いたプロンプトを作成します。読者やトーン、構成条件も整理して伝えられます。",
+        "formTitle": "執筆条件を入力",
+        "formDescription": "文章の種類、読者、トーン、参考資料などを整理して、作成・修正依頼に使いやすいプロンプトを組み立てます。",
+        "storageKey": "promptBuilderWriting",
+        "intro": "以下の条件で、文章作成または文章の改善を進めてください。",
+        "guidance": "読み手と目的に合う構成・文体を意識し、不足前提があれば合理的に補ってください。必要に応じて構成案も先に整理してください。",
+        "expectation": "構成案、本文、見出し案、改善ポイント、別案があれば分かりやすく整理して示してください。",
+        "fields": [
+          {
+            "id": "documentType",
+            "label": "作成したい文章の種類",
+            "type": "textarea",
+            "rows": 2,
+            "required": true,
+            "placeholder": "例: ブログ記事、レポート、説明文、メール文、提案書"
+          },
+          {
+            "id": "purpose",
+            "label": "目的",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "この文章で達成したいことを入力"
+          },
+          {
+            "id": "audience",
+            "label": "想定読者",
+            "type": "textarea",
+            "rows": 2,
+            "required": true,
+            "placeholder": "例: 大学生、社内メンバー、一般読者、初心者"
+          },
+          {
+            "id": "hasMaterials",
+            "label": "参考資料・元原稿",
+            "type": "radio",
+            "options": ["なし", "あり"],
+            "default": "なし"
+          },
+          {
+            "id": "materials",
+            "label": "参考資料名・元原稿",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: 箇条書きメモ、既存記事、会議メモ、URL",
+            "conditional": { "field": "hasMaterials", "value": "あり" }
+          },
+          {
+            "id": "materialSummary",
+            "label": "参考資料の概要",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "元原稿の要点、使いたい事実、盛り込みたい情報を入力",
+            "conditional": { "field": "hasMaterials", "value": "あり" }
+          },
+          {
+            "id": "points",
+            "label": "盛り込みたい内容・論点",
+            "type": "textarea",
+            "rows": 4,
+            "required": true,
+            "placeholder": "必ず触れてほしい内容やメッセージを入力"
+          },
+          {
+            "id": "tone",
+            "label": "文体・トーン",
+            "type": "select",
+            "options": ["指定なし", "丁寧でわかりやすい", "論文調・客観的", "親しみやすい", "フォーマル", "説得力重視"],
+            "default": "丁寧でわかりやすい"
+          },
+          {
+            "id": "structure",
+            "label": "長さ・構成の希望",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: 1200文字程度、導入→本文3章→まとめ、見出し付き"
+          },
+          {
+            "id": "output",
+            "label": "出力",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: 完成原稿、構成案＋原稿、リライト案、タイトル案3つ"
+          },
+          {
+            "id": "touchExisting",
+            "label": "既存の文章や元原稿に触れて良いか",
+            "type": "select",
+            "options": ["はい", "いいえ", "必要であれば"],
+            "default": "必要であれば"
+          },
+          {
+            "id": "constraints",
+            "label": "制約・注意点",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "例: 専門用語を減らす、敬体で統一、誇張表現は避ける"
+          },
+          {
+            "id": "notes",
+            "label": "補足",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "追加の希望や背景があれば入力"
+          }
+        ],
+        "promptSections": [
+          { "title": "＃作成したい文章の種類", "field": "documentType" },
+          { "title": "＃目的", "field": "purpose" },
+          { "title": "＃想定読者", "field": "audience" },
+          { "title": "＃参考資料・元原稿", "field": "hasMaterials" },
+          {
+            "title": "＃参考資料名・元原稿",
+            "field": "materials",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasMaterials", "value": "あり" }
+          },
+          {
+            "title": "＃参考資料の概要",
+            "field": "materialSummary",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasMaterials", "value": "あり" }
+          },
+          { "title": "＃盛り込みたい内容・論点", "field": "points" },
+          { "title": "＃文体・トーン", "field": "tone" },
+          { "title": "＃長さ・構成の希望", "field": "structure" },
+          { "title": "＃出力", "field": "output" },
+          { "title": "＃既存の文章や元原稿に触れて良いか", "field": "touchExisting" },
+          { "title": "＃制約・注意点", "field": "constraints" },
+          { "title": "＃補足", "field": "notes" }
+        ],
+        "exampleData": {
+          "documentType": "大学生向けのブログ記事",
+          "purpose": "生成AIを活用した学習法を分かりやすく紹介し、実践のハードルを下げたい。",
+          "audience": "レポート作成や情報整理に悩んでいる大学生",
+          "hasMaterials": "あり",
+          "materials": "授業メモ、実体験メモ、参考にした記事のURL",
+          "materialSummary": "AIに丸投げするのではなく、要点整理や構成づくりに活用する視点を中心にしたい。",
+          "points": "AIの使いどころ、使いすぎの注意点、具体的な活用例、学習効率化のコツを盛り込みたい。",
+          "tone": "丁寧でわかりやすい",
+          "structure": "1500文字前後、導入→活用例→注意点→まとめ、見出し付き",
+          "output": "完成原稿と、タイトル案を3つ出力してほしい。",
+          "touchExisting": "必要であれば",
+          "constraints": "初心者にも分かる表現にし、断定しすぎる表現は避けたい。",
+          "notes": "最後にすぐ試せる簡単なアクションも入れてほしい。"
+        }
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

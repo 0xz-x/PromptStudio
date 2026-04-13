@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>文献検索向け | 自動プロンプト作成ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-nav">
+        <a class="brand-link" href="index.html">Prompt Studio</a>
+        <nav class="nav-links" aria-label="ツール一覧">
+          <a class="nav-link" href="coding.html">コーディング</a>
+          <a class="nav-link" href="literature.html" aria-current="page">文献検索</a>
+          <a class="nav-link" href="writing.html">文章作成</a>
+        </nav>
+      </header>
+
+      <header class="hero tool-hero">
+        <p id="pageEyebrow" class="eyebrow"></p>
+        <h1 id="pageTitle"></h1>
+        <p id="pageCopy" class="hero-copy"></p>
+        <div class="hero-actions">
+          <a class="button secondary link-button" href="index.html">ホームへ戻る</a>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2 id="formTitle"></h2>
+            <p id="formDescription"></p>
+          </div>
+          <form id="promptForm" class="prompt-form"></form>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="panel-heading">
+            <h2>生成されたプロンプト</h2>
+            <p>検索依頼やサーベイ依頼に合わせて、そのまま使える形に整えます。</p>
+          </div>
+
+          <div class="output-toolbar">
+            <span id="statusMessage" class="status">未生成</span>
+            <button type="button" id="copyButton" class="button secondary">コピー</button>
+          </div>
+
+          <textarea
+            id="generatedPrompt"
+            class="output-area"
+            rows="24"
+            placeholder="ここに生成結果が表示されます"
+          ></textarea>
+        </section>
+      </main>
+    </div>
+
+    <script id="pageConfig" type="application/json">
+      {
+        "slug": "literature",
+        "pageTitle": "文献検索向けプロンプト作成",
+        "pageHeadingHtml": "文献検索向け<br />プロンプト作成",
+        "eyebrow": "Literature Search Prompt",
+        "heroCopy": "論文調査、関連研究サーベイ、先行研究探索に向いたプロンプトを作成します。検索範囲や優先条件も整理して伝えられます。",
+        "formTitle": "検索条件を入力",
+        "formDescription": "文献検索に必要なテーマ、キーワード、範囲、出力条件を整理してプロンプト化します。",
+        "storageKey": "promptBuilderLiterature",
+        "intro": "以下の条件で、文献検索と関連研究の整理を進めてください。",
+        "guidance": "信頼性の高い情報源を優先し、検索戦略が分かる形で候補文献と要点を整理してください。不足条件があれば合理的に補ってください。",
+        "expectation": "検索語の提案、検索範囲、候補文献、各文献の要点、比較観点、引用情報、追加で探すべき観点まで整理してください。",
+        "fields": [
+          {
+            "id": "topic",
+            "label": "調査テーマ",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "何について文献検索したいかを入力"
+          },
+          {
+            "id": "purpose",
+            "label": "目的",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "なぜ調査するのか、何に使うのかを入力"
+          },
+          {
+            "id": "hasSources",
+            "label": "参照済み文献・前提資料",
+            "type": "radio",
+            "options": ["なし", "あり"],
+            "default": "なし"
+          },
+          {
+            "id": "sources",
+            "label": "文献名・URL・資料名",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: 論文名、URL、書籍名、レビュー記事など",
+            "conditional": { "field": "hasSources", "value": "あり" }
+          },
+          {
+            "id": "sourceSummary",
+            "label": "前提資料の概要",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "既に分かっていること、参照資料の中身や目的を入力",
+            "conditional": { "field": "hasSources", "value": "あり" }
+          },
+          {
+            "id": "keywords",
+            "label": "検索キーワード・同義語",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "英語キーワード、日本語キーワード、同義語、関連語を入力"
+          },
+          {
+            "id": "scope",
+            "label": "検索対象・範囲",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: Google Scholar、PubMed、CiNii、2019年以降、日本語と英語"
+          },
+          {
+            "id": "priority",
+            "label": "優先条件・除外条件",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "例: 査読ありを優先、レビュー論文を含める、企業ブログは除外"
+          },
+          {
+            "id": "output",
+            "label": "出力",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: 候補文献10本、要約表、主要論点、検索戦略の説明"
+          },
+          {
+            "id": "citationStyle",
+            "label": "引用形式・記載ルール",
+            "type": "select",
+            "options": ["指定なし", "APA", "MLA", "Chicago", "SIST"],
+            "default": "指定なし"
+          },
+          {
+            "id": "notes",
+            "label": "補足",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "追加で考慮してほしい観点があれば入力"
+          }
+        ],
+        "promptSections": [
+          { "title": "＃調査テーマ", "field": "topic" },
+          { "title": "＃目的", "field": "purpose" },
+          { "title": "＃参照済み文献・前提資料", "field": "hasSources" },
+          {
+            "title": "＃文献名・URL・資料名",
+            "field": "sources",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasSources", "value": "あり" }
+          },
+          {
+            "title": "＃前提資料の概要",
+            "field": "sourceSummary",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasSources", "value": "あり" }
+          },
+          { "title": "＃検索キーワード・同義語", "field": "keywords" },
+          { "title": "＃検索対象・範囲", "field": "scope" },
+          { "title": "＃優先条件・除外条件", "field": "priority" },
+          { "title": "＃出力", "field": "output" },
+          { "title": "＃引用形式・記載ルール", "field": "citationStyle" },
+          { "title": "＃補足", "field": "notes" }
+        ],
+        "exampleData": {
+          "topic": "生成AIを活用したプログラミング教育支援に関する最近の研究動向を調べたい。",
+          "purpose": "卒業研究の関連研究整理に使うため、主要テーマと研究ギャップを把握したい。",
+          "hasSources": "あり",
+          "sources": "Google Scholar の検索結果、教育工学系の先行論文数本",
+          "sourceSummary": "学習支援、コード補完、フィードバック自動化に関する文献をいくつか確認済み。",
+          "keywords": "generative AI programming education, AI-assisted coding education, code feedback, computer science education",
+          "scope": "Google Scholar、ACM Digital Library、IEEE Xplore、2022年以降、英語文献中心",
+          "priority": "査読付き論文を優先し、ニュース記事や企業ブログは除外したい。",
+          "output": "主要文献10本程度、各文献の要点、比較表、研究ギャップの整理を出力してほしい。",
+          "citationStyle": "APA",
+          "notes": "可能なら教育効果の評価方法についても注目して整理してほしい。"
+        }
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

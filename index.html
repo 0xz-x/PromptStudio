@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Studio | 自動プロンプト作成ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-nav">
+        <a class="brand-link" href="index.html">Prompt Studio</a>
+        <nav class="nav-links" aria-label="ツール一覧">
+          <a class="nav-link" href="coding.html">コーディング</a>
+          <a class="nav-link" href="literature.html">文献検索</a>
+          <a class="nav-link" href="writing.html">文章作成</a>
+        </nav>
+      </header>
+
+      <header class="hero home-hero">
+        <p class="eyebrow">Prompt Builder Suite</p>
+        <h1>目的に合わせて選べる<br />自動プロンプト作成ツール</h1>
+        <p class="hero-copy">
+          コーディング、文献検索、文章作成の3つの用途に合わせて、ChatGPT にそのまま貼り付けやすいプロンプトを生成できます。
+          目的ごとに必要な項目だけを整理して入力できる構成です。
+        </p>
+        <div class="hero-actions">
+          <a class="button secondary link-button" href="coding.html">コーディング向けを開く</a>
+          <a class="button secondary link-button" href="literature.html">文献検索向けを開く</a>
+          <a class="button secondary link-button" href="writing.html">文章作成向けを開く</a>  
+        </div>
+      </header>
+
+      <main class="home-main">
+        <section class="home-section">
+          <div class="section-heading">
+            <h2>ツールを選ぶ</h2>
+            <p>用途ごとに入力項目と生成テンプレートを最適化しています。</p>
+          </div>
+
+          <div class="tool-grid">
+            <article class="tool-card">
+              <p class="card-meta">Coding Prompt</p>
+              <h3>コーディング向け</h3>
+              <p class="card-copy">
+                目標、目的、読み込むファイル、処理内容、出力条件などを整理して、
+                実装依頼や修正依頼に使いやすいプロンプトを生成します。
+              </p>
+              <a class="button primary link-button" href="coding.html">開く</a>
+            </article>
+
+            <article class="tool-card">
+              <p class="card-meta">Literature Search</p>
+              <h3>文献検索向け</h3>
+              <p class="card-copy">
+                調査テーマ、検索範囲、キーワード、優先条件、引用形式などをまとめて、
+                文献探索や論文サーベイ向けのプロンプトを作成します。
+              </p>
+              <a class="button primary link-button" href="literature.html">開く</a>
+            </article>
+
+            <article class="tool-card">
+              <p class="card-meta">Writing Assistant</p>
+              <h3>文章作成向け</h3>
+              <p class="card-copy">
+                文章の種類、想定読者、トーン、構成、参考資料の有無などを整理して、
+                下書き作成やリライト依頼に使えるプロンプトを生成します。
+              </p>
+              <a class="button primary link-button" href="writing.html">開く</a>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>

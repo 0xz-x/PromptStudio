@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>コーディング向け | 自動プロンプト作成ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-nav">
+        <a class="brand-link" href="index.html">Prompt Studio</a>
+        <nav class="nav-links" aria-label="ツール一覧">
+          <a class="nav-link" href="coding.html" aria-current="page">コーディング</a>
+          <a class="nav-link" href="literature.html">文献検索</a>
+          <a class="nav-link" href="writing.html">文章作成</a>
+        </nav>
+      </header>
+
+      <header class="hero tool-hero">
+        <p id="pageEyebrow" class="eyebrow"></p>
+        <h1 id="pageTitle"></h1>
+        <p id="pageCopy" class="hero-copy"></p>
+        <div class="hero-actions">
+          <a class="button secondary link-button" href="index.html">ホームへ戻る</a>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2 id="formTitle"></h2>
+            <p id="formDescription"></p>
+          </div>
+          <form id="promptForm" class="prompt-form"></form>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="panel-heading">
+            <h2>生成されたプロンプト</h2>
+            <p>必要に応じて調整してからコピーできます。</p>
+          </div>
+
+          <div class="output-toolbar">
+            <span id="statusMessage" class="status">未生成</span>
+            <button type="button" id="copyButton" class="button secondary">コピー</button>
+          </div>
+
+          <textarea
+            id="generatedPrompt"
+            class="output-area"
+            rows="24"
+            placeholder="ここに生成結果が表示されます"
+          ></textarea>
+        </section>
+      </main>
+    </div>
+
+    <script id="pageConfig" type="application/json">
+      {
+        "slug": "coding",
+        "pageTitle": "コーディング向けプロンプト作成",
+        "pageHeadingHtml": "コーディング向け<br />プロンプト作成",
+        "eyebrow": "Coding Prompt Builder",
+        "heroCopy": "実装依頼、修正依頼、リファクタ依頼に向いたプロンプトを作成します。必要な要件を整理して、作業方針まで伝わる形に整形します。",
+        "formTitle": "要件を入力",
+        "formDescription": "入力内容をもとに、コーディング作業に使いやすいプロンプトを組み立てます。",
+        "storageKey": "promptBuilderCoding",
+        "intro": "以下の条件で、最適な実装・設計を進めてください。",
+        "guidance": "不足している前提があれば、合理的に補完したうえで提案・実装してください。必要であれば、作業前に確認事項も整理してください。",
+        "expectation": "実装方針を簡潔に整理し、必要に応じてコード例、修正内容、注意点、テスト観点も示してください。",
+        "fields": [
+          {
+            "id": "goal",
+            "label": "目標",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "何を達成したいかを入力"
+          },
+          {
+            "id": "purpose",
+            "label": "目的",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "なぜそれを行うのか、背景や意図を入力"
+          },
+          {
+            "id": "hasFiles",
+            "label": "読み込むファイル",
+            "type": "radio",
+            "options": ["なし", "あり"],
+            "default": "なし"
+          },
+          {
+            "id": "files",
+            "label": "読み込むファイル名・場所",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: src/app.js, config/settings.json",
+            "conditional": { "field": "hasFiles", "value": "あり" }
+          },
+          {
+            "id": "fileSummary",
+            "label": "ファイル概要",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "各ファイルの役割や中身の概要を入力",
+            "conditional": { "field": "hasFiles", "value": "あり" }
+          },
+          {
+            "id": "process",
+            "label": "処理の内容",
+            "type": "textarea",
+            "rows": 4,
+            "required": true,
+            "placeholder": "どのような処理をしてほしいかを具体的に入力"
+          },
+          {
+            "id": "output",
+            "label": "出力",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "期待する成果物や表示形式を入力"
+          },
+          {
+            "id": "touchExisting",
+            "label": "既存のプログラムに触れて良いか",
+            "type": "select",
+            "options": ["はい", "いいえ", "必要であれば"],
+            "default": "必要であれば"
+          },
+          {
+            "id": "stack",
+            "label": "使用技術・前提条件",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: HTML/CSS/JavaScriptのみ、React使用可、Node.js 20 など"
+          },
+          {
+            "id": "constraints",
+            "label": "制約・注意点",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "例: 既存UIの雰囲気を維持、ライブラリ追加禁止、日本語コメントで説明"
+          },
+          {
+            "id": "notes",
+            "label": "補足",
+            "type": "textarea",
+            "rows": 3,
+            "placeholder": "補足したい条件や不明点があれば入力"
+          }
+        ],
+        "promptSections": [
+          { "title": "＃目標", "field": "goal" },
+          { "title": "＃目的", "field": "purpose" },
+          { "title": "＃読み込むファイル", "field": "hasFiles" },
+          {
+            "title": "＃読み込むファイル名・場所",
+            "field": "files",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasFiles", "value": "あり" }
+          },
+          {
+            "title": "＃ファイル概要",
+            "field": "fileSummary",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasFiles", "value": "あり" }
+          },
+          { "title": "＃処理の内容", "field": "process" },
+          { "title": "＃出力", "field": "output" },
+          { "title": "＃既存のプログラムに触れて良いか", "field": "touchExisting" },
+          { "title": "＃使用技術・前提条件", "field": "stack" },
+          { "title": "＃制約・注意点", "field": "constraints" },
+          { "title": "＃補足", "field": "notes" }
+        ],
+        "exampleData": {
+          "goal": "既存の問い合わせフォームを改善し、入力内容から適切なバリデーションと送信処理を実装したい。",
+          "purpose": "入力ミスを減らし、送信失敗時の原因を分かりやすくして、問い合わせ完了率を上げたい。",
+          "hasFiles": "あり",
+          "files": "index.html, styles.css, script.js",
+          "fileSummary": "index.html はフォーム構造、styles.css は画面デザイン、script.js は送信処理とバリデーションを担当している。",
+          "process": "必須項目チェック、メールアドレス形式チェック、エラー表示、送信中の二重送信防止、成功時メッセージ表示を実装したい。",
+          "output": "修正後のコードと、どのような変更を行ったかの説明を出力してほしい。",
+          "touchExisting": "必要であれば",
+          "stack": "HTML/CSS/JavaScriptのみで対応。外部ライブラリは追加しない。",
+          "constraints": "既存の見た目は大きく変えず、モバイル表示も崩さないようにしたい。",
+          "notes": "必要なら改善案も追加で提案してほしい。"
+        }
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
