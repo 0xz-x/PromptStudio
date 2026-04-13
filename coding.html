@@ -77,6 +77,13 @@
         "expectation": "実装方針を簡潔に整理し、必要に応じてコード例、修正内容、注意点、テスト観点も示してください。",
         "fields": [
           {
+            "id": "role",
+            "label": "ロール",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: 経験豊富なフロントエンドエンジニア、コードレビュー担当者"
+          },
+          {
             "id": "goal",
             "label": "目標",
             "type": "textarea",
@@ -89,7 +96,6 @@
             "label": "目的",
             "type": "textarea",
             "rows": 3,
-            "required": true,
             "placeholder": "なぜそれを行うのか、背景や意図を入力"
           },
           {
@@ -161,6 +167,7 @@
           }
         ],
         "promptSections": [
+          { "title": "＃ロール", "field": "role" },
           { "title": "＃目標", "field": "goal" },
           { "title": "＃目的", "field": "purpose" },
           { "title": "＃読み込むファイル", "field": "hasFiles" },
@@ -184,6 +191,7 @@
           { "title": "＃補足", "field": "notes" }
         ],
         "exampleData": {
+          "role": "経験豊富なフロントエンドエンジニアとして対応してほしい。",
           "goal": "既存の問い合わせフォームを改善し、入力内容から適切なバリデーションと送信処理を実装したい。",
           "purpose": "入力ミスを減らし、送信失敗時の原因を分かりやすくして、問い合わせ完了率を上げたい。",
           "hasFiles": "あり",

@@ -77,6 +77,13 @@
         "expectation": "検索語の提案、検索範囲、候補文献、各文献の要点、比較観点、引用情報、追加で探すべき観点まで整理してください。",
         "fields": [
           {
+            "id": "role",
+            "label": "ロール",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: リサーチアシスタント、学術調査に強い研究支援者"
+          },
+          {
             "id": "topic",
             "label": "調査テーマ",
             "type": "textarea",
@@ -89,7 +96,6 @@
             "label": "目的",
             "type": "textarea",
             "rows": 3,
-            "required": true,
             "placeholder": "なぜ調査するのか、何に使うのかを入力"
           },
           {
@@ -162,6 +168,7 @@
           }
         ],
         "promptSections": [
+          { "title": "＃ロール", "field": "role" },
           { "title": "＃調査テーマ", "field": "topic" },
           { "title": "＃目的", "field": "purpose" },
           { "title": "＃参照済み文献・前提資料", "field": "hasSources" },
@@ -185,6 +192,7 @@
           { "title": "＃補足", "field": "notes" }
         ],
         "exampleData": {
+          "role": "研究支援に慣れたリサーチアシスタントとして対応してほしい。",
           "topic": "生成AIを活用したプログラミング教育支援に関する最近の研究動向を調べたい。",
           "purpose": "卒業研究の関連研究整理に使うため、主要テーマと研究ギャップを把握したい。",
           "hasSources": "あり",

@@ -77,6 +77,13 @@
         "expectation": "構成案、本文、見出し案、改善ポイント、別案があれば分かりやすく整理して示してください。",
         "fields": [
           {
+            "id": "role",
+            "label": "ロール",
+            "type": "textarea",
+            "rows": 2,
+            "placeholder": "例: 編集者、コピーライター、わかりやすく説明するライター"
+          },
+          {
             "id": "documentType",
             "label": "作成したい文章の種類",
             "type": "textarea",
@@ -89,7 +96,6 @@
             "label": "目的",
             "type": "textarea",
             "rows": 3,
-            "required": true,
             "placeholder": "この文章で達成したいことを入力"
           },
           {
@@ -177,6 +183,7 @@
           }
         ],
         "promptSections": [
+          { "title": "＃ロール", "field": "role" },
           { "title": "＃作成したい文章の種類", "field": "documentType" },
           { "title": "＃目的", "field": "purpose" },
           { "title": "＃想定読者", "field": "audience" },
@@ -202,6 +209,7 @@
           { "title": "＃補足", "field": "notes" }
         ],
         "exampleData": {
+          "role": "読みやすさと説得力を両立できる編集者として対応してほしい。",
           "documentType": "大学生向けのブログ記事",
           "purpose": "生成AIを活用した学習法を分かりやすく紹介し、実践のハードルを下げたい。",
           "audience": "レポート作成や情報整理に悩んでいる大学生",
