@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>問題解決向け | 自動プロンプト作成ツール</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-nav">
+        <a class="brand-link" href="index.html">Prompt Studio</a>
+        <nav class="nav-links" aria-label="ツール一覧">
+          <a class="nav-link" href="coding.html">コーディング</a>
+          <a class="nav-link" href="literature.html">文献検索</a>
+          <a class="nav-link" href="writing.html">文章作成</a>
+          <a class="nav-link" href="problem-solving.html" aria-current="page">問題解決</a>
+        </nav>
+      </header>
+
+      <header class="hero tool-hero">
+        <p id="pageEyebrow" class="eyebrow"></p>
+        <h1 id="pageTitle"></h1>
+        <p id="pageCopy" class="hero-copy"></p>
+        <div class="hero-actions">
+          <a class="button secondary link-button" href="index.html">ホームへ戻る</a>
+        </div>
+      </header>
+
+      <main class="grid">
+        <section class="panel form-panel">
+          <div class="panel-heading">
+            <h2 id="formTitle"></h2>
+            <p id="formDescription"></p>
+          </div>
+          <form id="promptForm" class="prompt-form"></form>
+        </section>
+
+        <section class="panel output-panel">
+          <div class="panel-heading">
+            <h2>生成されたプロンプト</h2>
+            <p>課題整理、打ち手の比較、意思決定に使いやすい形に整えます。</p>
+          </div>
+
+          <div class="output-toolbar">
+            <span id="statusMessage" class="status">未生成</span>
+            <button type="button" id="copyButton" class="button secondary">コピー</button>
+          </div>
+
+          <textarea
+            id="generatedPrompt"
+            class="output-area"
+            rows="24"
+            placeholder="ここに生成結果が表示されます"
+          ></textarea>
+        </section>
+      </main>
+    </div>
+
+    <script id="pageConfig" type="application/json">
+      {
+        "slug": "problem-solving",
+        "pageTitle": "問題解決向けプロンプト作成",
+        "pageHeadingHtml": "問題解決向け<br />プロンプト作成",
+        "eyebrow": "Problem Solving Prompt",
+        "heroCopy": "状況、核心の意図、出力形式、条件、具体例を整理して、課題分析や意思決定に向いたプロンプトを作成します。",
+        "formTitle": "問題解決の条件を入力",
+        "formDescription": "Role、Context、Directive、Output Formatting、Style Instructions、任意の Examples を整理して、相談しやすい形に組み立てます。",
+        "storageKey": "promptBuilderProblemSolving",
+        "intro": "以下の条件で、問題解決に向けた分析・提案を進めてください。",
+        "guidance": "状況を踏まえて核心の意図に答え、前提が不足している場合は合理的に補ってください。必要に応じて論点、選択肢、リスク、次の行動を整理してください。",
+        "expectation": "結論、理由、具体的な解決策、比較観点、実行手順、注意点を分かりやすく示してください。",
+        "fields": [
+          {
+            "id": "role",
+            "label": "Role（役割）",
+            "type": "textarea",
+            "rows": 2,
+            "required": true,
+            "placeholder": "例: 経験豊富な事業コンサルタント、教育設計の専門家、プロジェクトマネージャー"
+          },
+          {
+            "id": "context",
+            "label": "Additional Information = context（状況）",
+            "type": "textarea",
+            "rows": 4,
+            "required": true,
+            "placeholder": "背景、現状、制約、関係者、既に試したことなどを入力"
+          },
+          {
+            "id": "directive",
+            "label": "Directive = 核心の意図（知りたいこと）",
+            "type": "textarea",
+            "rows": 4,
+            "required": true,
+            "placeholder": "何を知りたいか、何を決めたいか、どの問題を解きたいかを入力"
+          },
+          {
+            "id": "outputFormatting",
+            "label": "Output Formatting（形式）",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: 結論→理由→打ち手3案→比較表→次のアクション"
+          },
+          {
+            "id": "styleInstructions",
+            "label": "Style Instructions（条件）",
+            "type": "textarea",
+            "rows": 3,
+            "required": true,
+            "placeholder": "例: 日本語で簡潔に、専門用語は説明する、実行可能性を重視する"
+          },
+          {
+            "id": "hasExamples",
+            "label": "Examples（入力＋出力の例）",
+            "type": "radio",
+            "options": ["なし", "あり"],
+            "default": "なし"
+          },
+          {
+            "id": "examples",
+            "label": "Examples の内容",
+            "type": "textarea",
+            "rows": 5,
+            "placeholder": "例: 入力例と望ましい出力例、過去の回答例、避けたい回答例など",
+            "conditional": { "field": "hasExamples", "value": "あり" }
+          }
+        ],
+        "promptSections": [
+          { "title": "＃Role（役割）", "field": "role" },
+          { "title": "＃Additional Information = context（状況）", "field": "context" },
+          { "title": "＃Directive = 核心の意図（知りたいこと）", "field": "directive" },
+          { "title": "＃Output Formatting（形式）", "field": "outputFormatting" },
+          { "title": "＃Style Instructions（条件）", "field": "styleInstructions" },
+          { "title": "＃Examples（入力＋出力の例）", "field": "hasExamples" },
+          {
+            "title": "＃Examples の内容",
+            "field": "examples",
+            "emptyFallback": "未指定",
+            "conditional": { "field": "hasExamples", "value": "あり" }
+          }
+        ],
+        "exampleData": {
+          "role": "経験豊富なプロジェクトマネージャーとして、現実的な打ち手を提案してほしい。",
+          "context": "小規模チームで新しいWebサービスを開発している。リリース予定まで残り3週間だが、主要機能の一部が遅れている。メンバーは3名で、デザインと実装の両方を兼任している。",
+          "directive": "リリース日を守るために、何を削り、何を優先し、どのように進めるべきかを知りたい。",
+          "outputFormatting": "最初に結論を示し、その後に優先順位、削る候補、残すべき機能、3週間の進め方、リスクを表で整理してほしい。",
+          "styleInstructions": "日本語で簡潔に。理想論ではなく、少人数チームでも実行できる具体策を重視してほしい。",
+          "hasExamples": "あり",
+          "examples": "入力例: 残り期間が短く、機能が遅れている。出力例: 優先度A/B/Cに分け、削る判断基準と今週やることを明確にする。"
+        }
+      }
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>
